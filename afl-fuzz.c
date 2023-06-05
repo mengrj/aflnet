@@ -774,7 +774,7 @@ void update_state_aware_variables(struct queue_entry *q, u8 dry_run)
   if (is_state_sequence_interesting(state_sequence, state_count)) {
     //Save the current kl_messages to a file which can be used to replay the newly discovered paths on the ipsm
     u8 *temp_str = state_sequence_to_string(state_sequence, state_count);
-    u8 *fname = alloc_printf("%s/replayable-new-ipsm-paths/id:%s:%s", out_dir, temp_str, dry_run ? basename(q->fname) : "new");
+    u8 *fname = alloc_printf("%s/replayable-new-ipsm-paths/id:%llu:%s:%s", out_dir, get_cur_time() / 1000, temp_str, dry_run ? basename(q->fname) : "new");
     save_kl_messages_to_file(kl_messages, fname, 1, messages_sent);
     ck_free(temp_str);
     ck_free(fname);
@@ -4384,7 +4384,7 @@ static void maybe_update_plot_file(double bitmap_cvg, double eps) {
           "%llu, %llu, %u, %u, %u, %u, %0.02f%%, %llu, %llu, %u, %0.02f\n",
           get_cur_time() / 1000, queue_cycle - 1, current_entry, queued_paths,
           pending_not_fuzzed, pending_favored, bitmap_cvg, unique_crashes,
-          unique_hangs, max_depth, eps); /* ignore errors */
+          unique_hangs, max_depth, eps, agnnodes(ipsm), agnedges(ipsm)); /* ignore errors */
 
   fflush(plot_file);
 
@@ -8259,7 +8259,7 @@ EXP_ST void setup_dirs_fds(void) {
 
   fprintf(plot_file, "# unix_time, cycles_done, cur_path, paths_total, "
                      "pending_total, pending_favs, map_size, unique_crashes, "
-                     "unique_hangs, max_depth, execs_per_sec\n");
+                     "unique_hangs, max_depth, execs_per_sec, n_nodes, n_edges\n");
                      /* ignore errors */
 
 }
